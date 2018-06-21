@@ -21,7 +21,7 @@
 /******/ 	}
 /******/
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "339b3b50a76502d537fb"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "943c3288c2b273634d1d"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -749,6 +749,94 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/dotenv/lib/main.js":
+/*!*****************************************!*\
+  !*** ./node_modules/dotenv/lib/main.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const fs = __webpack_require__(/*! fs */ "fs")
+const path = __webpack_require__(/*! path */ "path")
+
+/*
+ * Parses a string or buffer into an object
+ * @param {(string|Buffer)} src - source to be parsed
+ * @returns {Object} keys and values from src
+*/
+function parse (src) {
+  const obj = {}
+
+  // convert Buffers before splitting into lines and processing
+  src.toString().split('\n').forEach(function (line) {
+    // matching "KEY' and 'VAL' in 'KEY=VAL'
+    const keyValueArr = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/)
+    // matched?
+    if (keyValueArr != null) {
+      const key = keyValueArr[1]
+
+      // default undefined or missing values to empty string
+      let value = keyValueArr[2] || ''
+
+      // expand newlines in quoted values
+      const len = value ? value.length : 0
+      if (len > 0 && value.charAt(0) === '"' && value.charAt(len - 1) === '"') {
+        value = value.replace(/\\n/gm, '\n')
+      }
+
+      // remove any surrounding quotes and extra spaces
+      value = value.replace(/(^['"]|['"]$)/g, '').trim()
+
+      obj[key] = value
+    }
+  })
+
+  return obj
+}
+
+/*
+ * Main entry point into dotenv. Allows configuration before loading .env
+ * @param {Object} options - options for parsing .env file
+ * @param {string} [options.path=.env] - path to .env file
+ * @param {string} [options.encoding=utf8] - encoding of .env file
+ * @returns {Object} parsed object or error
+*/
+function config (options) {
+  let dotenvPath = path.resolve(process.cwd(), '.env')
+  let encoding = 'utf8'
+
+  if (options) {
+    if (options.path) {
+      dotenvPath = options.path
+    }
+    if (options.encoding) {
+      encoding = options.encoding
+    }
+  }
+
+  try {
+    // specifying an encoding returns a string instead of a buffer
+    const parsed = parse(fs.readFileSync(dotenvPath, { encoding }))
+
+    Object.keys(parsed).forEach(function (key) {
+      if (!Object({"BUILD_TARGET":"server"}).hasOwnProperty(key)) {
+        Object({"BUILD_TARGET":"server"})[key] = parsed[key]
+      }
+    })
+
+    return { parsed }
+  } catch (e) {
+    return { error: e }
+  }
+}
+
+module.exports.config = config
+module.exports.load = config
+module.exports.parse = parse
+
+
+/***/ }),
+
 /***/ "./node_modules/webpack/hot/log-apply-result.js":
 /*!*****************************************!*\
   !*** (webpack)/hot/log-apply-result.js ***!
@@ -907,6 +995,199 @@ if (true) {
 
 /***/ }),
 
+/***/ "./src/api/index.ts":
+/*!**************************!*\
+  !*** ./src/api/index.ts ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var restRouter_1 = __webpack_require__(/*! ./restRouter */ "./src/api/restRouter.ts");
+exports.restRouter = restRouter_1.restRouter;
+
+
+/***/ }),
+
+/***/ "./src/api/resources/user/index.ts":
+/*!*****************************************!*\
+  !*** ./src/api/resources/user/index.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./user.restRouter */ "./src/api/resources/user/user.restRouter.ts"));
+
+
+/***/ }),
+
+/***/ "./src/api/resources/user/user.controller.ts":
+/*!***************************************************!*\
+  !*** ./src/api/resources/user/user.controller.ts ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const user_model_1 = __webpack_require__(/*! ./user.model */ "./src/api/resources/user/user.model.ts");
+exports.createOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.User.create(req.body);
+        res.status(201).json(user);
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.getAll = (req, res) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const users = yield user_model_1.User.find({});
+        res.status(201).json(users);
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.getOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.User.findOne({ _id: req.params.id });
+        res.status(201).json(user);
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.deleteOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.User.findByIdAndRemove({ _id: req.params.id });
+        res.status(201).json(user);
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.updateOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+        res.status(201).json(user);
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+
+
+/***/ }),
+
+/***/ "./src/api/resources/user/user.model.ts":
+/*!**********************************************!*\
+  !*** ./src/api/resources/user/user.model.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = __webpack_require__(/*! mongoose */ "mongoose");
+const userSchema = new mongoose_1.Schema({
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    passwordHash: {
+        required: true,
+        type: String
+    }
+}, { timestamps: true });
+exports.User = mongoose_1.model('user', userSchema);
+
+
+/***/ }),
+
+/***/ "./src/api/resources/user/user.restRouter.ts":
+/*!***************************************************!*\
+  !*** ./src/api/resources/user/user.restRouter.ts ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = __webpack_require__(/*! express */ "express");
+const user_controller_1 = __webpack_require__(/*! ./user.controller */ "./src/api/resources/user/user.controller.ts");
+exports.userRouter = express.Router();
+// userRouter.param('id', findByParam);
+exports.userRouter.route('/')
+    .get(user_controller_1.getAll)
+    .post(user_controller_1.createOne);
+exports.userRouter.route('/:id')
+    .get(user_controller_1.getOne)
+    .put(user_controller_1.updateOne)
+    .delete(user_controller_1.deleteOne);
+
+
+/***/ }),
+
+/***/ "./src/api/restRouter.ts":
+/*!*******************************!*\
+  !*** ./src/api/restRouter.ts ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = __webpack_require__(/*! express */ "express");
+const user_1 = __webpack_require__(/*! ./resources/user */ "./src/api/resources/user/index.ts");
+exports.restRouter = express.Router();
+exports.restRouter.use('/user', user_1.userRouter);
+// restRouter.use('/exercise', exerciseRouter);
+// restRouter.use('/session', sessionRouter);
+
+
+/***/ }),
+
+/***/ "./src/db.ts":
+/*!*******************!*\
+  !*** ./src/db.ts ***!
+  \*******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose = __webpack_require__(/*! mongoose */ "mongoose");
+mongoose.Promise = global.Promise;
+exports.connect = () => {
+    return mongoose.connect(`mongodb://${Object({"BUILD_TARGET":"server"}).DB_USER}:${Object({"BUILD_TARGET":"server"}).DB_PASS}@ds263460.mlab.com:63460/${Object({"BUILD_TARGET":"server"}).DB_NAME}`);
+};
+
+
+/***/ }),
+
 /***/ "./src/index.ts":
 /*!**********************!*\
   !*** ./src/index.ts ***!
@@ -919,7 +1200,6 @@ if (true) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = __webpack_require__(/*! http */ "http");
 const app = __webpack_require__(/*! ./server.ts */ "./src/server.ts");
-// import schema from './schema'
 const server = http_1.createServer(app.default);
 let currentApp = app.default;
 server.listen(8080, () => {
@@ -968,11 +1248,16 @@ exports.default = setGlobalMiddleware;
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __webpack_require__(/*! express */ "express");
 const middleware_1 = __webpack_require__(/*! ./middleware */ "./src/middleware.ts");
+__webpack_require__(/*! dotenv */ "./node_modules/dotenv/lib/main.js").config();
+const api_1 = __webpack_require__(/*! ./api */ "./src/api/index.ts");
+const db_1 = __webpack_require__(/*! ./db */ "./src/db.ts");
 const app = express();
 middleware_1.default(app);
-// connect()
-app.get('/', (req, res) => {
-    res.json({ ok: false });
+db_1.connect();
+app.use('/api', api_1.restRouter);
+// catch all if route not found
+app.all('*', (req, res) => {
+    res.json({ message: 'route not found' });
 });
 exports.default = app;
 
@@ -1014,6 +1299,17 @@ module.exports = require("express");
 
 /***/ }),
 
+/***/ "fs":
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+
 /***/ "http":
 /*!***********************!*\
   !*** external "http" ***!
@@ -1022,6 +1318,28 @@ module.exports = require("express");
 /***/ (function(module, exports) {
 
 module.exports = require("http");
+
+/***/ }),
+
+/***/ "mongoose":
+/*!***************************!*\
+  !*** external "mongoose" ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose");
+
+/***/ }),
+
+/***/ "path":
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
 
 /***/ })
 
