@@ -2,7 +2,6 @@ import { createServer } from 'http';
 
 import * as mod_app from './server';
 const app: typeof mod_app = <any>require('./server.ts');
-// import schema from './schema'
 
 const server = createServer(app.default);
 let currentApp = app.default;
