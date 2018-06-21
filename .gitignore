@@ -41,3 +41,6 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# dist folder
+dist/
