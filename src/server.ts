@@ -7,6 +7,8 @@ import { connect } from './db';
 
 const app = express();
 
+const mode = process.env.NODE_ENV ? 'development' : 'production';
+
 setupMiddleware(app);
 connect();
 

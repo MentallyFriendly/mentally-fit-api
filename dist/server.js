@@ -21,7 +21,7 @@
 /******/ 	}
 /******/
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "943c3288c2b273634d1d"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "4644b8af8070816ac6cf"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -1252,6 +1252,7 @@ __webpack_require__(/*! dotenv */ "./node_modules/dotenv/lib/main.js").config();
 const api_1 = __webpack_require__(/*! ./api */ "./src/api/index.ts");
 const db_1 = __webpack_require__(/*! ./db */ "./src/db.ts");
 const app = express();
+const mode =  true ? 'development' : undefined;
 middleware_1.default(app);
 db_1.connect();
 app.use('/api', api_1.restRouter);
