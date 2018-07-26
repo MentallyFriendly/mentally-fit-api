@@ -1,4 +1,4 @@
 export interface IUser {
   email: string;
-  passwordHash: string;
+  password: string;
 }
