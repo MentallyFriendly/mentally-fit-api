@@ -2,7 +2,6 @@ import { Session } from './session.model';
 import { Request, Response } from 'express';
 
 export const createOne = async (req: Request, res: Response) => {
-  console.log('create session');
   try {
     req.body.creator = req.user.id;
     const session = await Session.create(req.body);
