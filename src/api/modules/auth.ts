@@ -37,7 +37,7 @@ export const getFreshUser = () => async (req: Request, res: Response, next: Next
   }
 };
 
-export const verifyUser = () => (req: Request, res: Response, next: NextFunction) => {
+export const verifyUser = () => async (req: Request, res: Response, next: NextFunction) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -45,21 +45,21 @@ export const verifyUser = () => (req: Request, res: Response, next: NextFunction
     res.status(400).send('You need a username and password');
     return;
   }
-
-  User.findOne({ email: email })
-    .then(function(user) {
-      if (!user) {
-        res.status(401).send('No user registered with the given email');
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      res.status(401).send('No user registered with the given email');
+    } else {
+      if (!user.authenticate(password)) {
+        res.status(401).send('Incorrect password');
       } else {
-        if (!user.authenticate(password)) {
-          res.status(401).send('Incorrect password');
-        } else {
-          req.user = user;
-          next();
-        }
+        req.user = user;
+        next();
       }
-    })
-    .catch(error => next(error));
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const signToken = (id: string) => {
