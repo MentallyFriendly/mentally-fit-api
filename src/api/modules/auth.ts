@@ -23,18 +23,18 @@ export const decodeToken = () => (req: Request, res: Response, next: NextFunctio
   checkToken(req, res, next);
 };
 
-export const getFreshUser = () => (req: Request, res: Response, next: NextFunction) => {
-  return User.findById(req.user.id)
-    .then(function(user) {
-      if (!user) {
-        res.status(401).send('Unauthorized');
-      } else {
-        console.log(user);
-        req.user = user;
-        next();
-      }
-    })
-    .catch(error => next(error));
+export const getFreshUser = () => async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = User.findById(req.user.id);
+    if (!user) {
+      res.status(401).send('Unauthorized');
+    } else {
+      req.user = user;
+      next();
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const verifyUser = () => (req: Request, res: Response, next: NextFunction) => {
