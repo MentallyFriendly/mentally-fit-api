@@ -19,7 +19,13 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true
-    }
+    },
+    sessions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Session'
+      }
+    ]
   },
   { timestamps: true }
 );
@@ -29,7 +35,7 @@ userSchema.methods = {
     return compareSync(plainTextPassword, this.password);
   },
   hashPassword(plainTextPassword: string) {
-    // Change these methods to ASYNC
+    // Change these methods to async in prod
     if (!plainTextPassword) {
       throw new Error('Could not save user');
     }

@@ -15,14 +15,12 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     publicPath: 'dist'
   },
-  watch: true,
   devtool: 'source-map',
   target: 'node',
   node: {
     __filename: true,
     __dirname: true
   },
-  mode: 'development',
   resolve: {
     modules: ['./src', 'node_modules'],
     extensions: ['.ts', '.js', '.json']

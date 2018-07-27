@@ -29,7 +29,7 @@ export const getFreshUser = () => async (req: Request, res: Response, next: Next
     if (!user) {
       res.status(401).send('Unauthorized');
     } else {
-      req.user = user;
+      req.user = { ...req.user, ...user };
       next();
     }
   } catch (error) {
