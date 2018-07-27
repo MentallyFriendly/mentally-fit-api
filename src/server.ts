@@ -3,14 +3,12 @@ import setupMiddleware from './middleware';
 import { restRouter } from './api';
 import { connect } from './db';
 import { verifyUser, signin, protect } from './api/modules/auth';
-const express = require('express');
-const morgan = require('morgan');
+import * as express from 'express';
+import * as morgan from 'morgan';
 
 const app = express();
 
-app.use(morgan('combined'));
-
-const mode = process.env.NODE_ENV ? 'development' : 'production';
+app.use(morgan('dev'));
 
 setupMiddleware(app);
 connect();
