@@ -4,10 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "build": "NODE_ENV=production webpack",
-    "webpack": "webpack --mode development",
-    "start": "webpack --progress",
-    "server:dev": "webpack --config webpack.config.js --watch",
+    "build": "webpack --mode production",
+    "start": "webpack --mode development --watch",
     "nodemon": "nodemon ./dist/server.js"
   },
   "author": "",
@@ -23,6 +21,7 @@
     "@types/lodash.merge": "^4.6.3",
     "@types/mongodb": "^3.0.21",
     "@types/mongoose": "^4.7.37",
+    "@types/morgan": "^1.7.35",
     "@types/webpack-env": "^1.13.6",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
