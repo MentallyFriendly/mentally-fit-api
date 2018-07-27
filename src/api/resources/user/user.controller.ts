@@ -37,9 +37,19 @@ export const deleteOne = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteAll = async (req: Request, res: Response) => {
+  try {
+    const users = await User.remove({});
+    res.status(201).json(users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const updateOne = async (req: Request, res: Response) => {
   try {
     const user = await User.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+    await user.save();
     res.status(201).json(user);
   } catch (error) {
     console.error(error);
